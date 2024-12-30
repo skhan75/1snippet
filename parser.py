@@ -1,79 +1,53 @@
-from lark import Lark, Transformer, UnexpectedInput
+from lark import Lark, Transformer
 import json
 
+# Transformer to convert parsed tree into JSON
 class SnippetTransformer(Transformer):
-    """
-    Transforms the parsed tree into a structured Python dictionary.
-    """
+    def start(self, items):
+        return items
+
     def snippet(self, items):
-        metadata, codeblock = items
-        return {**metadata, **codeblock}
-
-    def metadata(self, items):
-        return dict(items)
-
-    def header(self, items):
-        return ("name", items[0].strip())
-
-    def prefix(self, items):
-        return ("prefix", items[0].strip())
-
-    def description(self, items):
-        return ("description", items[0].strip())
-
-    def codeblock(self, items):
+        # Combine snippet components into a dictionary
         return {
-            "language": items[0].strip(),
-            "code": items[1].strip(),
-            "placeholders": self.extract_placeholders(items[1].strip()),
+            "prefix": items[0],
+            "title": items[1],
+            "description": items[2],
+            "body": items[3]["code"].strip(),
+            "language": items[3]["language"]
         }
 
-    def extract_placeholders(self, code):
-        """
-        Extracts placeholders in the format ${1:placeholder}.
-        """
-        import re
-        placeholder_pattern = r"\$\{(\d+):([^}]+)\}"
-        matches = re.finditer(placeholder_pattern, code)
+    def prefix(self, items):
+        return str(items[0])[1:-1]  
 
-        return [
-            {"index": int(match.group(1)), "default": match.group(2)}
-            for match in matches
-        ]
+    def title(self, items):
+        return str(items[0])[1:-1]  
 
+    def description(self, items):
+        return str(items[0])[1:-1]  
 
-def parse_snippets(snippet_text):
-    """
-    Parses the snippet text and returns a list of snippets as Python dictionaries.
+    def code(self, items):
+        language = str(items[0])
+        body = str(items[1])
+        return {"language": language, "code": body}
 
-    Args:
-        snippet_text (str): The content of the `.snippet` file.
+    def CODE_BODY(self, items):
+        return "".join(items)
 
-    Returns:
-        list: A list of parsed snippets as structured dictionaries.
-    """
-    try:
-        # Load the grammar from the grammar file
-        with open("grammar/snippet_grammar.lark", "r") as grammar_file:
-            snippet_parser = Lark(grammar_file.read(), parser="lalr", transformer=SnippetTransformer())
+with open("grammar/snippet_grammar.lark", "r") as grammar_file:
+    snippet_grammar = grammar_file.read()
 
-        # Parse the snippet text
-        parsed_snippets = snippet_parser.parse(snippet_text)
-        return parsed_snippets
-    except UnexpectedInput as e:
-        print("Failed to parse snippet file. Please check the syntax.")
-        print(e)
-        return None
+# Create the parser
+snippet_parser = Lark(snippet_grammar, parser="lalr", transformer=SnippetTransformer())
 
-if __name__ == "__main__":
-    # Read the test snippet file
-    with open("javascript.snippet", "r") as file:
-        snippet_text = file.read()
+def test():
+    with open("test.snippet", "r") as f:
+        test_snippet = f.read()
 
-    # Parse the snippet file
-    parsed_snippets = parse_snippets(snippet_text)
+    parsed = snippet_parser.parse(test_snippet)
+    json_output = json.dumps(parsed, indent=4)
+    print(json_output)  # Output the JSON-like dictionary
 
-    # Print the parsed output as JSON
-    if parsed_snippets:
-        print(json.dumps(parsed_snippets, indent=4))
+if __name__ == '__main__':
+    test()
+
 
