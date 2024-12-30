@@ -47,6 +47,6 @@ def test_invalid_snippets():
 if __name__ == "__main__":
     print("Running tests for valid snippets...")
     test_valid_snippets()
-   # print("Running tests for invalid snippets...")
-   # test_invalid_snippets()
+    print("Running tests for invalid snippets...")
+    test_invalid_snippets()
 

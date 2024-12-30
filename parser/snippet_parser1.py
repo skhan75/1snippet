@@ -1,5 +1,6 @@
 from lark import Lark, Transformer
 import json
+import os
 
 # Transformer to convert parsed tree into JSON
 class SnippetTransformer(Transformer):
@@ -52,3 +53,16 @@ def parse_snippet_file(file_path, grammar_path):
         snippet_text = f.read()
     parsed = parser.parse(snippet_text)
     return json.dumps(parsed, indent=4)
+
+
+# Main script for standalone testing
+if __name__ == "__main__":
+    grammar_path = os.path.join(os.path.dirname(__file__), "snippet_grammar.lark")
+    snippet_file = os.path.join(os.getcwd(), "test.snippet")
+    
+    try:
+        output = parse_snippet_file(snippet_file, grammar_path)
+        print(output)
+    except Exception as e:
+        print(f"Error parsing snippet file: {e}")
+
