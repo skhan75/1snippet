@@ -9,6 +9,8 @@ from parser.exceptions import (
 
 import json
 
+SUPPORTED_LANGUAGES = {"javascript", "python", "java", "c++", "c#", "go", "ruby", "typescript", "elixir"}
+
 # Transformer to convert parsed tree into JSON
 class SnippetTransformer(Transformer):
     def start(self, items):
@@ -20,8 +22,9 @@ class SnippetTransformer(Transformer):
             "title": items[1],
             "description": items[2],
             "body": items[3]["code"].strip(),
-            "language": items[3]["language"]
+            "language": self.validate_language(items[3]["language"])
         }
+
 
     def prefix(self, items):
         return str(items[0])[1:-1]
@@ -40,6 +43,11 @@ class SnippetTransformer(Transformer):
     def CODE_BODY(self, items):
         return "".join(items)
 
+    def validate_language(self, language):
+        """Validate that the language is in the supported languages list."""
+        if language.lower() not in SUPPORTED_LANGUAGES:
+            raise ValueError(f"Unsupported language: {language}. Supported languages are: {', '.join(SUPPORTED_LANGUAGES)}")
+        return language
 
 def load_grammar(grammar_path):
     """Load the Lark grammar from a file."""
@@ -99,16 +107,3 @@ def parse_snippet_file(file_path, grammar_path):
 
     except Exception as e:
         raise GeneralParsingError(file_path, str(e)) from e
-
-#def parse_snippet_file(file_path, grammar_path):
-#    """Parse a snippet file and return the JSON output."""
-#    parser = create_parser(grammar_path)
-#    snippet_text = ""  # Ensure snippet_text is always defined
-#    try:
-#        with open(file_path, "r") as f:
-#            snippet_text = f.read()
-#        parsed = parser.parse(snippet_text)
-#        return json.dumps(parsed, indent=4)
-#    except Exception as e:
-#        print("Exceptions>>>", e)
-#        raise e
