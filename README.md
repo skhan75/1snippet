@@ -1,2 +1,138 @@
-# 1snippet
-Attempt to create an universal parser for code snippets to be compatible with major IDEs (including Neovim)
+# Snippet Parser
+
+A universal snippet parser that allows you to define code snippets in a consistent format and converts them into a format suitable for IDEs like Visual Studio Code, Neovim, Sublime Text, and others.
+
+This parser simplifies the process of writing and managing snippets by using a human-readable grammar and generating language-specific JSON files that can be directly used in IDEs.
+
+---
+
+## Features
+
+- **Supports Multiple Languages**: Parse snippets for supported languages like JavaScript, Python, Java, C++, etc.
+- **Extensible Grammar**: Define your snippets using a simple, flexible grammar.
+- **Error Handling**: Comprehensive error handling with detailed messages for:
+  - Missing fields
+  - Malformed brackets
+  - Unsupported languages
+  - Incomplete or invalid snippets
+- **VSCODE-Compatible Output**: Converts parsed snippets into JSON format directly compatible with Visual Studio Code.
+- **Validation**: Ensures snippets adhere to supported language and format.
+
+---
+
+## Supported Languages
+
+- JavaScript
+- Python
+- Java
+- C++
+- C#
+- Go
+- Ruby
+- TypeScript
+- Elixir
+
+---
+
+## Grammar Definition
+
+Snippets are defined in a `.snippet` file using the following format:
+
+```plaintext
+<!language
+  (
+    "prefix",
+    "description",
+    ```code body```
+  )
+  (
+    "prefix",
+    "description",
+    ```code body```
+  )
+>
+```
+
+## Example Snippet 
+```plaintext 
+<!javascript
+  (
+    "log",
+    "Logs a Message to the console",
+    ```console.log("Hello world")```
+  )
+  (
+    "logerr",
+    "Logs an Error Message to the console",
+    ```console.error("This is an Error")```
+  )
+  (
+    "trycatch",
+    "Creates a basic try catch block",
+    ```
+    try {
+        ${1:// code here}
+    } catch (${2:error}) {
+        console.error(${2:error});
+    }
+    ```
+  )
+  (
+    "function",
+    "Creates a JavaScript function",
+    ```
+    function ${1:functionName}(${2:args}) {
+      ${3:// function body here}
+    }
+    ```
+  )
+>
+```
+
+## Installation
+
+### Step 1. Clone the Repository
+```bash
+git clone https://github.com/your-repo/snippet-parser.git
+cd snippet-parser
+```
+
+### Step 2. Create and Activate a Virtual Environment
+```bash
+python3 -m venv env
+source env/bin/activate  # On Linux/Mac
+env\Scripts\activate  # On Windows
+```
+
+### Step 3: Install the Package
+Run the following command to install the package:
+```bash
+pip install .
+```
+
+Alternatively, for development mode:
+```bash
+pip install -e .
+```
+
+## Usage 
+
+### Parsing a Snippet File 
+Run the following command to parse a `.snippet` file and generate a JSON output
+```bash
+snippet-parser path/to/snippet/file.snippet
+```
+
+### Sample Output 
+```JSON
+{
+  "scope": "javascript",
+  "snippets": {
+    "log": {
+      "prefix": "log",
+      "body": ["console.log(\"Hello world\")"],
+      "description": "Logs a Message to the console"
+    }
+  }
+}
+```
