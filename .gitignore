@@ -1,0 +1,67 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+env/
+venv/
+ENV/
+env.bak/
+myenv/
+*.egg-info
+*.egg
+
+# Distribution / packaging
+.build/
+dist/
+*.egg-info/
+*.eggs/
+pip-wheel-metadata/
+share/python-wheels/
+
+# Install artifacts
+*.whl
+
+# Setup files
+*.cfg
+*.ini
+*.log
+*.tmp
+
+# Unit test / coverage reports
+.pytest_cache/
+.tox/
+.coverage
+*.cover
+*.pyc
+
+# Pyre
+.pyre/
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.DS_Store
+
+# Logs
+*.log
+
+# Lark Parser related cached files
+*.lark_cache
+
+# Test snippets
+tests/snippets/valid_snippets/*.snippet
+
+# User and system files
+Thumbs.db
+Desktop.ini
+
+# OS generated files
+.DS_Store
+
