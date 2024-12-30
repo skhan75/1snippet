@@ -15,7 +15,7 @@ class SyntaxError(SnippetParsingError):
 
     def __str__(self):
         return (
-            f"HELLOSyntax error in snippet file '{self.file_path}' at line {self.line}, column {self.column}.\n"
+            f"Syntax error in snippet file '{self.file_path}' at line {self.line}, column {self.column}.\n"
             f"Unexpected token: {self.unexpected}. Expected one of: {self.expected}.\n"
             f"Context: {self.context}"
         )
