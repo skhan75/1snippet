@@ -4,7 +4,15 @@ A universal snippet parser that allows you to define code snippets in a consiste
 
 This parser simplifies the process of writing and managing snippets by using a human-readable grammar and generating language-specific JSON files that can be directly used in IDEs.
 
----
+## Why Are We Building This?
+
+Managing and sharing code snippets across different IDEs and editors can be a cumbersome task. Different editors expect snippets in their own specific formats, leading to duplicate effort, reduced productivity, and inconsistency in snippet usage. 
+
+The **Snippet Parser** solves this problem by introducing:
+- **A single source of truth**: Write snippets once using a simple and flexible grammar.
+- **Cross-IDE compatibility**: Generate editor-specific snippet files for Visual Studio Code, Neovim, Sublime Text, and other IDEs from the same source.
+- **Enhanced organization**: Keep your snippets structured and validated to avoid missing fields or incorrect syntax.
+- **Time-Saving**: Write once, use everywhere! No need to manually duplicate or translate snippets for each editor.
 
 ## Features
 
