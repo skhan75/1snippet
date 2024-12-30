@@ -2,6 +2,7 @@ import os
 import json
 from lark import Lark
 from parser.snippet_parser import SnippetTransformer
+from parser.snippet_parser import parse_snippet_file
 
 # Load the grammar
 with open("parser/snippet_grammar.lark", "r") as grammar_file:
@@ -10,12 +11,13 @@ with open("parser/snippet_grammar.lark", "r") as grammar_file:
 # Create the parser
 snippet_parser = Lark(snippet_grammar, parser="lalr", transformer=SnippetTransformer())
 
-def parse_snippet_file(file_path):
-    """Parse a snippet file and return the parsed JSON."""
-    with open(file_path, "r") as f:
-        snippet_text = f.read()
-    return snippet_parser.parse(snippet_text)
-
+#def parse_snippet_file(file_path):
+#    """Parse a snippet file and return the parsed JSON."""
+#    with open(file_path, "r") as f:
+#        snippet_text = f.read()
+#    print("Calling Snippet Parser..")
+#    return snippet_parser.parse(snippet_text)
+grammar_path="parser/snippet_grammar.lark"
 def test_valid_snippets():
     """Test valid snippet files."""
     test_dir = "tests/snippets/valid_snippets"
@@ -24,7 +26,7 @@ def test_valid_snippets():
             print(f"Testing valid snippet: {file}")
             file_path = os.path.join(test_dir, file)
             try:
-                result = parse_snippet_file(file_path)
+                result = parse_snippet_file(file_path, grammar_path)
                 print(json.dumps(result, indent=4))
                 print(f"✅ {file} passed\n")
             except Exception as e:
@@ -38,7 +40,7 @@ def test_invalid_snippets():
             print(f"Testing invalid snippet: {file}")
             file_path = os.path.join(test_dir, file)
             try:
-                result = parse_snippet_file(file_path)
+                result = parse_snippet_file(file_path, grammar_path)
                 print(json.dumps(result, indent=4))
                 print(f"❌ {file} passed unexpectedly\n")
             except Exception as e:
