@@ -6,6 +6,10 @@ A universal snippet parser that allows you to define code snippets in a consiste
 
 This parser simplifies the process of writing and managing snippets by using a human-readable grammar and generating language-specific JSON files that can be directly used in IDEs.
 
+## 🚧 Development in Progress
+
+Its my first (Noob) attempt at building something with language grammar and parsers. It is currently under active development, and the parser is being tested. Features are being added, and the parser is being tested extensively, so bear with me. Please expect changes and improvements in upcoming versions. Feedback and contributions are always welcome!
+
 ## Why Are We Building This?
 
 Managing and sharing code snippets across different IDEs and editors can be a cumbersome task. Different editors expect snippets in their own specific formats, leading to duplicate effort, reduced productivity, and inconsistency in snippet usage. 
