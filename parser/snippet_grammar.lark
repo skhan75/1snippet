@@ -1,14 +1,13 @@
-start: "<!" snippet* ">"
+start: LANGUAGE_HEADER snippet* ">"
 
-snippet: "(" prefix "," title "," description "," code ")"
+LANGUAGE_HEADER: "<!" WORD
 
-prefix: ESCAPED_STRING
-title: "title=" ESCAPED_STRING
-description: "description=" ESCAPED_STRING
-code: "```" LANGUAGE CODE_BODY "```"
+snippet: "("ESCAPED_STRING","ESCAPED_STRING","code")"
 
-CODE_BODY: /[^`]+/  // Matches everything except backticks
-LANGUAGE: /[a-zA-Z_][a-zA-Z0-9_]*/
+code: "```" CODE_BODY "```"
+
+CODE_BODY: /([^`]|`(?!``))+/ 
+WORD: /[a-zA-Z_][a-zA-Z0-9_]*/
 ESCAPED_STRING: /"([^"\\]*(\\.[^"\\]*)*)"/
 
 %import common.WS

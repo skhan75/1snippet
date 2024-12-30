@@ -9,43 +9,54 @@ from parser.exceptions import (
 
 import json
 
-SUPPORTED_LANGUAGES = {"javascript", "python", "java", "c++", "c#", "go", "ruby", "typescript", "elixir"}
+SUPPORTED_LANGUAGES = {"javascript", "python", "java", "c++", "c#", "go", "ruby",
+                       "typescript", "elixir"}
 
 # Transformer to convert parsed tree into JSON
 class SnippetTransformer(Transformer):
     def start(self, items):
-        return items
+        if not items:
+            raise ValueError("No items found in the snippet file.")
 
-    def snippet(self, items):
+        language = items[0]
+        snippets = items[1:]
+
         return {
-            "prefix": items[0],
-            "title": items[1],
-            "description": items[2],
-            "body": items[3]["code"].strip(),
-            "language": self.validate_language(items[3]["language"])
+            "language": self.validate_language(language),
+            "snippets": snippets,
         }
 
+    def LANGUAGE_HEADER(self, items):
+        language = str(items).replace("<!", "").strip()
+        return language
 
-    def prefix(self, items):
-        return str(items[0])[1:-1]
+    def snippet(self, items):
+        if len(items) != 3:
+            raise ValueError(f"Snippet block does not have exactly 3 items: {items}")
 
-    def title(self, items):
-        return str(items[0])[1:-1]
+        # Properly assign the values to prefix, description, and body
+        prefix = items[0]
+        description = items[1]
+        body = items[2]
 
-    def description(self, items):
-        return str(items[0])[1:-1]
+        return {
+            "prefix": prefix,
+            "description": description,
+            "body": body,
+        }
 
     def code(self, items):
-        language = str(items[0])
-        body = str(items[1])
-        return {"language": language, "code": body}
+        return str(items[0]).strip()
+
+    def ESCAPED_STRING(self, items):
+        return items
 
     def CODE_BODY(self, items):
         return "".join(items)
 
     def validate_language(self, language):
         """Validate that the language is in the supported languages list."""
-        if language.lower() not in SUPPORTED_LANGUAGES:
+        if language.lower().strip() not in SUPPORTED_LANGUAGES:
             raise ValueError(f"Unsupported language: {language}. Supported languages are: {', '.join(SUPPORTED_LANGUAGES)}")
         return language
 
@@ -66,7 +77,7 @@ def parse_snippet_file(file_path, grammar_path):
     try:
         with open(file_path, "r") as f:
             snippet_text = f.read()
-        parsed = parser.parse(snippet_text)
+        parsed = construct_vscode_json(parser.parse(snippet_text))
         return json.dumps(parsed, indent=4)
 
     except exceptions.UnexpectedToken as e:
@@ -106,4 +117,36 @@ def parse_snippet_file(file_path, grammar_path):
         raise FileNotFoundError(file_path) from e
 
     except Exception as e:
-        raise GeneralParsingError(file_path, str(e)) from e
+        raise GeneralParsingError(file_path, f"Unexpected error: {e}") from e
+
+def construct_vscode_json(parsed_output):
+    """Format parsed snippets into VSCode JSON format."""
+    if not isinstance(parsed_output, dict):
+        raise ValueError("Parsed output is not in the expected dictionary format.")
+    
+    # Initialize the VSCode snippets dictionary
+    vscode_snippets = {}
+    
+    # Extract the language scope
+    language = parsed_output.get("language", "global")  # Default to "global" if no language is provided
+    vscode_snippets["scope"] = language
+    vscode_snippets["snippets"] = {}
+
+    # Iterate over all snippets in the parsed output
+    for snippet in parsed_output.get("snippets", []):
+        prefix = snippet.get("prefix", "").strip()
+        description = snippet.get("description", "").strip()
+        body = snippet.get("body", "").strip().split("\n")  # Split multi-line code into an array
+
+        if not prefix or not body:
+            raise ValueError(f"Invalid snippet data: {snippet}")
+
+        # Add each snippet into the snippets dictionary
+        vscode_snippets["snippets"][prefix] = {
+            "prefix": prefix,
+            "body": body,
+            "description": description
+        }
+
+    return vscode_snippets
+
