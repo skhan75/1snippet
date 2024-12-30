@@ -1,5 +1,7 @@
 # Snippet Parser
 
+![Development Status](https://img.shields.io/badge/status-in%20progress-orange)
+
 A universal snippet parser that allows you to define code snippets in a consistent format and converts them into a format suitable for IDEs like Visual Studio Code, Neovim, Sublime Text, and others.
 
 This parser simplifies the process of writing and managing snippets by using a human-readable grammar and generating language-specific JSON files that can be directly used in IDEs.
