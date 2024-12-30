@@ -56,7 +56,7 @@ share/python-wheels/
 *.lark_cache
 
 # Test snippets
-tests/snippets/valid_snippets/*.snippet
+# tests/snippets/valid_snippets/*.snippet
 
 # User and system files
 Thumbs.db
