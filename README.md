@@ -1,4 +1,4 @@
-# Snippet Parser
+# 1snippet 
 
 ![Development Status](https://img.shields.io/badge/status-in%20progress-orange)
 
