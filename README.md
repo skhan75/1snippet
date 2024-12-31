@@ -130,14 +130,64 @@ pip install -e .
 ```
 
 ## Usage 
+The snippet parser allows you to parse .snippet files written in the specified grammar and convert them into a JSON format compatible with Visual Studio Code or other IDEs.
 
-### Parsing a Snippet File 
-Run the following command to parse a `.snippet` file and generate a JSON output
-```bash
-snippet-parser path/to/snippet/file.snippet
+### Step 1: Create Your `.snippet` File 
+Write a .snippet file following the grammar format:
+
+```plaintext
+<!language
+  (
+    "prefix",
+    "description",
+    ```code body```
+  )
+  (
+    "prefix",
+    "description",
+    ```code body```
+  )
+>
 ```
 
-### Sample Output 
+Example (for JavaScript):
+
+```plaintext
+<!javascript
+  (
+    "log",
+    "Logs a Message to the console",
+    ```console.log("Hello world")```
+  )
+  (
+    "logerr",
+    "Logs an Error Message to the console",
+    ```console.error("This is an Error")```
+  )
+>
+```
+
+### Step 2: Parse the Snippet File
+Use the Python script to parse the snippet file and generate the JSON output.
+Example Python Script:
+
+```python
+from parser.snippet_parser import parse_snippet_file
+
+# Define the paths to the grammar file and the snippet file
+grammar_path = "parser/snippet_grammar.lark"
+snippet_file = "path/to/example.snippet"
+
+# Parse the snippet file
+try:
+    output_json = parse_snippet_file(snippet_file, grammar_path)
+    print(output_json)
+except Exception as e:
+    print(f"Error parsing snippet file: {e}")
+```
+
+Run the script to parse the snippet file. The output will be the JSON representation of the snippets.
+
 ```JSON
 {
   "scope": "javascript",
@@ -146,7 +196,13 @@ snippet-parser path/to/snippet/file.snippet
       "prefix": "log",
       "body": ["console.log(\"Hello world\")"],
       "description": "Logs a Message to the console"
+    },
+    "logerr": {
+      "prefix": "logerr",
+      "body": ["console.error(\"This is an Error\")"],
+      "description": "Logs an Error Message to the console"
     }
   }
 }
 ```
+

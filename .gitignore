@@ -17,6 +17,7 @@ myenv/
 
 # Distribution / packaging
 .build/
+build/
 dist/
 *.egg-info/
 *.eggs/
